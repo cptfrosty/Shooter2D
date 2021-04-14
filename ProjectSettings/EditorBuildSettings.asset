@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Project/Scenes/Dust.unity
+    guid: 06b66f2c284d8d24e843c1d0d9133706
   m_configObjects: {}

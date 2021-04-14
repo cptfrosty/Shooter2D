@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b26f748b3721c404584a32e0c63a7485, type: 3}
+  m_Name: Hitman
+  m_EditorClassIdentifier: 
+  skin_pistol: {fileID: 3348742086011969904, guid: c2aa2052171c37a4da59fdaadde16c53,
+    type: 3}
+  skin_machine: {fileID: -781846106722653705, guid: c2aa2052171c37a4da59fdaadde16c53,
+    type: 3}
+  skin_silencer: {fileID: -4908990663583209473, guid: c2aa2052171c37a4da59fdaadde16c53,
+    type: 3}
+  skin_reload: {fileID: 883475148404872817, guid: c2aa2052171c37a4da59fdaadde16c53,
+    type: 3}
+  skin_stand: {fileID: 702057652663933282, guid: c2aa2052171c37a4da59fdaadde16c53,
+    type: 3}
+  get_damage: {fileID: 8300000, guid: fc75a5ded424b0d4da12634c1a08114a, type: 3}

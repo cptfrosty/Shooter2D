@@ -10,4 +10,8 @@ public class Gun : ScriptableObject
     public GameObject prefabBullet;
     public int damage;
     public float speedBullet;
+
+    [Header("SFX")]
+    public AudioClip shot_pistol;
+    public AudioClip reload_pistol;
 }

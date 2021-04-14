@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameGun: M4A1
   countAmmo: 20
+  prefabBullet: {fileID: 1752292909760504009, guid: 2968399fd4245b143b5bcb826d35525d,
+    type: 3}
   damage: 20
   speedBullet: 20
+  shot_pistol: {fileID: 8300000, guid: 7de189711769eac46ac231f86706e9ac, type: 3}
+  reload_pistol: {fileID: 8300000, guid: aa75eaa6a1fa592498f4090514e19f0e, type: 3}
