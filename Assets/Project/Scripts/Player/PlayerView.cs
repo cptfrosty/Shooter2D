@@ -35,7 +35,13 @@ public class PlayerView : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
+        /*float posX = Input.GetAxis("Mouse X");
+        float posY = Input.GetAxis("Mouse Y");
+
+        Debug.Log($"{posX} - {posY}");*/
+
         mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
+
         Vector2 lookDir = mousePos - playerMovement.rb2d.position;
         float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
         playerMovement.rb2d.rotation = angle;

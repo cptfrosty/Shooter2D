@@ -38,9 +38,14 @@ public class PlayerCombat : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        base.OnStartLocalPlayer();
+        base.OnStartClient();
         playerView = GetComponent<PlayerView>();
         _gun = gunPistol;
+
+        if (isLocalPlayer)
+        {
+            GetComponent<Rigidbody2D>().isKinematic = false;
+        }
     }
 
     private void Update()
@@ -78,9 +83,9 @@ public class PlayerCombat : NetworkBehaviour
     #endregion
 
     [Command(requiresAuthority = false)]
-    private void Damage()
+    private void Damage(int damage)
     {
-        DealDamage(_gun.damage);
+        DealDamage(damage);
         audioDamage.PlayOneShot(dataPlayerCombat.get_damage);
     }
 
@@ -94,11 +99,13 @@ public class PlayerCombat : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!isLocalPlayer) return;
-
-        if (collision.collider.tag == "Bullet")
+        if (isClient)
         {
-            Damage();
+            if (collision.collider.tag == "Bullet")
+            {
+                Damage(_gun.damage);
+                NetworkServer.Destroy(collision.gameObject);
+            }
         }
     }
 
