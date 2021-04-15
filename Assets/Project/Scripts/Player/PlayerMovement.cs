@@ -5,9 +5,18 @@ using Mirror;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    public float speed;
-    public float idle;
-    public float run;
+    [SerializeField] private float speed;
+    [SerializeField] private float idle;
+    [SerializeField] private float run;
+
+    [SerializeField] private bool _isCanMove = true;
+    public bool SetCanMove
+    {
+        set
+        {
+            _isCanMove = value;
+        }
+    }
 
     [HideInInspector]
     public Rigidbody2D rb2d;
@@ -20,6 +29,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Update()
     {
+        if (isLocalPlayer && !_isCanMove) return;
+
         Move();
     }
 

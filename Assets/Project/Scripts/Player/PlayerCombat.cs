@@ -11,6 +11,12 @@ public enum TypeTeam
 [RequireComponent(typeof(PlayerView))]
 public class PlayerCombat : NetworkBehaviour
 {
+    public delegate void HandlerHP(int hp);
+    public event HandlerHP OnHPChange;
+
+    public delegate void HandlerArmor(int armor);
+    public event HandlerArmor OnArmorChange;
+
     public DataPlayerCombat dataPlayerCombat;
 
     public int hp = 100;
@@ -95,6 +101,9 @@ public class PlayerCombat : NetworkBehaviour
     {
         //TODO: РАССЧИТАТЬ УРОН АРМОРА И ЖИЗНЕЙ
         hp -= damage;
+
+        OnHPChange(hp);
+        OnArmorChange(armor);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
