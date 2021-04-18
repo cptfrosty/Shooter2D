@@ -11,5 +11,7 @@ public class DataPlayerCombat : ScriptableObject
     public Sprite skin_reload;
     public Sprite skin_stand;
 
+    public Sprite dead_mark;
+
     public AudioClip get_damage;
 }

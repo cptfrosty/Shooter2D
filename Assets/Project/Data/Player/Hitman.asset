@@ -22,4 +22,5 @@ MonoBehaviour:
     type: 3}
   skin_stand: {fileID: 702057652663933282, guid: c2aa2052171c37a4da59fdaadde16c53,
     type: 3}
+  dead_mark: {fileID: 21300000, guid: 09384b147af0a314286a6ab0fbf8c6c4, type: 3}
   get_damage: {fileID: 8300000, guid: fc75a5ded424b0d4da12634c1a08114a, type: 3}
