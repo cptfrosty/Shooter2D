@@ -115,15 +115,6 @@ public class SceneController : NetworkBehaviour
         {
             StartNewRound();
         }
-        /*if((countLife == 0 && (teamCT.Count != 0 || teamT.Count != 0)) || (countLife == 1 && (teamCT.Count > 1 || teamT.Count > 1)))
-        {
-            
-        }*/
-    }
-
-    public void SetNamePlayer(NetworkIdentity client, string name)
-    {
-        client.GetComponent<PlayerCombatController>().namePlayer = name;
     }
 
     [Server]
@@ -271,12 +262,6 @@ public class SceneController : NetworkBehaviour
     {
         clients.Add(client);
     }
-
-    /*[TargetRpc]
-    public void RpcPrintInfoTeam(NetworkConnection client)
-    {
-        client.identity.GetComponent<PlayerTeamController>().PrintInfoTeams(clients.Count, teamCT.Count, teamT.Count, maxPlayerInTeam);
-    }*/
 
     #endregion
 }

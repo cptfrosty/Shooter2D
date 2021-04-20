@@ -19,9 +19,14 @@ public class PlayerCombatController : NetworkBehaviour
     //Data
     [SerializeField] private DataPlayerCombat dataPlayerCombat;
 
+    [SyncVar]
+    public string namePlayer = " ";
+    /* НЕ РАБОТАЕТ 
     [SyncVar(hook = nameof(ChangeNamePlayer))]
     public string namePlayer = "";
-    
+
+    */
+
     [SerializeField] private List<Sprite> sprites; //Временно
     public DataPlayerCombat SetDataPlayerCombat
     {
@@ -62,26 +67,17 @@ public class PlayerCombatController : NetworkBehaviour
         }
     }
 
+    public void SetNamePlayer()
+    {
+        namePlayerText.text = namePlayer;
+    }
+
     //Вызывается с хука
     void ChangeSprite(int oldValue, int newValue)
     {
         sprite.sprite = sprites[newValue];
-        CmdChangeSprite(newValue);      
+        CmdChangeSprite(newValue);
     }
-
-    public void ChangeNamePlayer(string oldName, string newName)
-    {
-        //namePlayer = newName;
-        namePlayerText.text = newName;
-        //RpcChangeNamePlayer(newName);
-    }
-
-    /*[ClientRpc]
-    public void RpcChangeNamePlayer(string newName)
-    {
-        namePlayer = newName;
-        namePlayerText.text = namePlayer;
-    }*/
 
     [Command]
     void CmdChangeSprite(int value)
@@ -91,13 +87,13 @@ public class PlayerCombatController : NetworkBehaviour
 
     private void OnEnable()
     {
-        health = GetComponent<PlayerHealth>();
-        hudHealth = GetComponent<HudHealth>();
-        armor = GetComponent<PlayerArmor>();
-        hudArmor = GetComponent<HudArmor>();
-        view = GetComponent<PlayerViewSystem>();
-        shoot = GetComponent<PlayerCombatShootingSystem>();
-        movement = GetComponent<PlayerMovementSystem>();
+        health =        GetComponent<PlayerHealth>();
+        hudHealth =     GetComponent<HudHealth>();
+        armor =         GetComponent<PlayerArmor>();
+        hudArmor =      GetComponent<HudArmor>();
+        view =          GetComponent<PlayerViewSystem>();
+        shoot =         GetComponent<PlayerCombatShootingSystem>();
+        movement =      GetComponent<PlayerMovementSystem>();
 
         //Events
         OnDead += StatusDead;
@@ -253,9 +249,9 @@ public class PlayerCombatController : NetworkBehaviour
         {
             idSkinNow = 2;
         }*/
-    }
+}
 
-    private void OnCollisionEnter2D(Collision2D collision)
+private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isClient)
         {

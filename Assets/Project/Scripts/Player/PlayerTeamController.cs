@@ -23,20 +23,14 @@ public class PlayerTeamController : NetworkBehaviour
     {
         base.OnStartLocalPlayer();
         InitEvents();
-
-        //UIController.instance.ShowSelectTeam();
-
-        //CmdInfoTeams(netIdentity.connectionToClient);
     }
 
-    //[Command(requiresAuthority = false)]
-    //public void CmdInfoTeams(NetworkConnectionToClient client = null) => SceneController.instance.RpcPrintInfoTeam(client);
-
+    //Привязка событий
     public void InitEvents()
     {
-        OnSelectTeam += UIController.instance.selectTeam.PrintMessage;
-        OnErrorSelectTeam += UIController.instance.selectTeam.PrintMessage;
-        OnPrintInfoTeams += UIController.instance.selectTeam.InfoAboutTeams;
+        OnSelectTeam        += UIController.instance.selectTeam.PrintMessage;
+        OnErrorSelectTeam   += UIController.instance.selectTeam.PrintMessage;
+        OnPrintInfoTeams    += UIController.instance.selectTeam.InfoAboutTeams;
 
         if (isLocalPlayer)
         {
@@ -69,32 +63,48 @@ public class PlayerTeamController : NetworkBehaviour
     //Called from the button
     public void SelectTeamCT()
     {
-        if (isClient)
+        if (isLocalPlayer)
         {
             if (string.IsNullOrEmpty(UIController.instance.selectTeam.GetNameInput)) return;
             string namePlayer = UIController.instance.selectTeam.GetNameInput;
-            SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
-            //SetNamePlayer(namePlayer);
+            //SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
+            CmdSetNamePlayer(netIdentity, namePlayer);
             CmdSelectTeamCT(netIdentity);
         }
     }
     //Called from the button
     public void SelectTeamT()
     {
-        if (isClient)
+        if (isLocalPlayer)
         {
             if (string.IsNullOrEmpty(UIController.instance.selectTeam.GetNameInput)) return;
             string namePlayer = UIController.instance.selectTeam.GetNameInput;
-            SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
-            //SetNamePlayer(namePlayer);
+            //SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
+            CmdSetNamePlayer(netIdentity,namePlayer);
             CmdSelectTeamT(netIdentity);
         }
     }
 
-    public void SetNamePlayer(string namePlayer)
+    #region Установка имени
+    [Command(requiresAuthority = false)]
+    public void CmdSetNamePlayer(NetworkIdentity client,string namePlayer)
     {
-        GetComponent<PlayerCombatController>().namePlayer = namePlayer;
+        client.GetComponent<PlayerCombatController>().namePlayer = namePlayer;
+        SetNamePlayer();
     }
+
+    [Server]
+    public void SetNamePlayer()
+    {
+        RpcSetNamePlayer();
+    }
+
+    [ClientRpc]
+    public void RpcSetNamePlayer()
+    {
+        GetComponent<PlayerCombatController>().SetNamePlayer();
+    }
+    #endregion
 
     [Command(requiresAuthority = false)]
     public void CmdSelectTeamCT(NetworkIdentity client)
