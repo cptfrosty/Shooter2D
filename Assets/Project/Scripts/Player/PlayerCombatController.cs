@@ -18,6 +18,11 @@ public class PlayerCombatController : NetworkBehaviour
 
     //Data
     [SerializeField] private DataPlayerCombat dataPlayerCombat;
+
+    [SyncVar(hook = nameof(ChangeNamePlayer))]
+    public string namePlayer = "";
+    
+    [SerializeField] private List<Sprite> sprites; //Временно
     public DataPlayerCombat SetDataPlayerCombat
     {
         set
@@ -26,16 +31,21 @@ public class PlayerCombatController : NetworkBehaviour
         }
     }
 
+    [SerializeField] private TextMesh namePlayerText;
+
     //Components
     [SerializeField] [ReadOnly] private PlayerHealth health;
     [SerializeField] [ReadOnly] private HudHealth hudHealth;
     [SerializeField] [ReadOnly] private PlayerArmor armor;
     [SerializeField] [ReadOnly] private HudArmor hudArmor;
-    [SerializeField]            private SpriteRenderer sprite;
-
+    [SerializeField]            public SpriteRenderer sprite;
     [SerializeField] [ReadOnly] private PlayerCombatShootingSystem shoot;
     [SerializeField] [ReadOnly] private PlayerViewSystem view;
     [SerializeField] [ReadOnly] private PlayerMovementSystem movement;
+
+    public int idSkin = -1; //Выставляется при выборе команды.
+
+    [SyncVar(hook = nameof(ChangeSprite))] public int idSkinNow;
 
     //Varable
     [SerializeField] [ReadOnly] private bool isDead;
@@ -50,6 +60,33 @@ public class PlayerCombatController : NetworkBehaviour
             GetComponent<Rigidbody2D>().isKinematic = false;
             SceneController.instance.AddClient(netIdentity);
         }
+    }
+
+    //Вызывается с хука
+    void ChangeSprite(int oldValue, int newValue)
+    {
+        sprite.sprite = sprites[newValue];
+        CmdChangeSprite(newValue);      
+    }
+
+    public void ChangeNamePlayer(string oldName, string newName)
+    {
+        //namePlayer = newName;
+        namePlayerText.text = newName;
+        //RpcChangeNamePlayer(newName);
+    }
+
+    /*[ClientRpc]
+    public void RpcChangeNamePlayer(string newName)
+    {
+        namePlayer = newName;
+        namePlayerText.text = namePlayer;
+    }*/
+
+    [Command]
+    void CmdChangeSprite(int value)
+    {
+        sprite.sprite = sprites[value];
     }
 
     private void OnEnable()
@@ -73,7 +110,8 @@ public class PlayerCombatController : NetworkBehaviour
     {
         if (!isDead)
         {
-            CmdChoiseSpritePlayerSkinPistol();
+            if(isLocalPlayer)
+                CmdChoiseSpritePlayerSkin(idSkin);
 
             health.Value = 100;
             armor.Value = 100;
@@ -111,25 +149,28 @@ public class PlayerCombatController : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdChoiseSpritePlayerDead()
     {
+        idSkinNow = 2;
         RpcChoiseSpritePlayerDead();
     }
     [ClientRpc]
     public void RpcChoiseSpritePlayerDead()
     {
-        sprite.sprite = dataPlayerCombat.dead_mark;
+        
+        //sprite.sprite = dataPlayerCombat.dead_mark;
     }
     #endregion
 
     #region Поменять на скин с пистолетом
     [Command(requiresAuthority = false)]
-    public void CmdChoiseSpritePlayerSkinPistol()
+    public void CmdChoiseSpritePlayerSkin(int idSkin)
     {
-        RpcChoiseSpritePlayerSkinPistol();
+        RpcChoiseSpritePlayerSkin(idSkin);
     }
     [ClientRpc]
-    public void RpcChoiseSpritePlayerSkinPistol()
+    public void RpcChoiseSpritePlayerSkin(int idSkin)
     {
-        sprite.sprite = dataPlayerCombat.skin_pistol;
+        //sprite.sprite = dataPlayerCombat.skin_pistol;
+        this.idSkinNow = idSkin;
     }
     #endregion
 
@@ -137,14 +178,17 @@ public class PlayerCombatController : NetworkBehaviour
 
     private void Damage(int damage)
     {
-        CmdDealDamage(damage);
+        DealDamage(damage);
         damageSound.PlayOneShot(dataPlayerCombat.get_damage);
     }
 
     //Получение урона
-    [Command(requiresAuthority = false)]
-    public void CmdDealDamage(int damage)
+    //[Command(requiresAuthority = false)]
+    [Client]
+    public void DealDamage(int damage)
     {
+        if (!isLocalPlayer) return;
+
         PlayerArmor cArmor = GetComponent<PlayerArmor>();
         PlayerHealth cHealth = GetComponent<PlayerHealth>();
 
@@ -199,6 +243,16 @@ public class PlayerCombatController : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.K)){
             StatusDead(true);
         }
+
+        /*if (Input.GetKeyDown(KeyCode.F1))
+        {
+            idSkinNow = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            idSkinNow = 2;
+        }*/
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

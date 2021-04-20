@@ -69,14 +69,31 @@ public class PlayerTeamController : NetworkBehaviour
     //Called from the button
     public void SelectTeamCT()
     {
-        if(isClient)
+        if (isClient)
+        {
+            if (string.IsNullOrEmpty(UIController.instance.selectTeam.GetNameInput)) return;
+            string namePlayer = UIController.instance.selectTeam.GetNameInput;
+            SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
+            //SetNamePlayer(namePlayer);
             CmdSelectTeamCT(netIdentity);
+        }
     }
     //Called from the button
     public void SelectTeamT()
     {
         if (isClient)
+        {
+            if (string.IsNullOrEmpty(UIController.instance.selectTeam.GetNameInput)) return;
+            string namePlayer = UIController.instance.selectTeam.GetNameInput;
+            SceneController.instance.SetNamePlayer(this.netIdentity, namePlayer);
+            //SetNamePlayer(namePlayer);
             CmdSelectTeamT(netIdentity);
+        }
+    }
+
+    public void SetNamePlayer(string namePlayer)
+    {
+        GetComponent<PlayerCombatController>().namePlayer = namePlayer;
     }
 
     [Command(requiresAuthority = false)]

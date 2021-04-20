@@ -18,8 +18,17 @@ public class UISelectTeam : MonoBehaviour
     [Header("General")]
     [SerializeField] private Text message;
     [SerializeField] private Text allCountPlayers;
+    [SerializeField] private InputField inputName;
 
     bool isStartCoroutine = false;
+
+    public string GetNameInput
+    {
+        get
+        {
+            return inputName.text;
+        }
+    }
 
     private void Start()
     {

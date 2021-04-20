@@ -121,6 +121,11 @@ public class SceneController : NetworkBehaviour
         }*/
     }
 
+    public void SetNamePlayer(NetworkIdentity client, string name)
+    {
+        client.GetComponent<PlayerCombatController>().namePlayer = name;
+    }
+
     [Server]
     private void StartNewRound()
     {
@@ -187,19 +192,26 @@ public class SceneController : NetworkBehaviour
             player.team = PlayerTeamController.TypeTeam.CT;
         }
 
-        RpcSelectDataPlayerCombat(client);
+        SelectDataPlayerCombat(client,0);
+
+        client.GetComponent<PlayerCombatController>().idSkinNow = 0;
+        client.GetComponent<PlayerCombatController>().idSkin = 0;
 
         player.StatusSelectTeam(client.connectionToClient ,true);
+        player.transform.position = spawnPositionCT[0].position; //Спавн игрока
+        RpcNewPositionPlayer(client, spawnPositionCT[0].position);
     }
 
-    [ClientRpc]
-    public void RpcSelectDataPlayerCombat(NetworkIdentity client)
+    public void SelectDataPlayerCombat(NetworkIdentity client, int num)
     {
         //ВЫБОР СКИНА ДЛЯ ИГРОКА
-        int n = Random.Range(0, dataPlayerCombatCT.Count);
-        client.GetComponent<PlayerCombatController>().SetDataPlayerCombat = dataPlayerCombatCT[n];
+        //int n = Random.Range(0, dataPlayerCombatCT.Count);
+        //client.GetComponent<PlayerCombatController>().SetDataPlayerCombat = dataPlayerCombatCT[n];
+        client.GetComponent<PlayerCombatController>().idSkinNow = num;
+        client.GetComponent<PlayerCombatController>().idSkin = num;
         //КОНЕЦ ВЫБОРА СКИНА ДЛЯ ИГРОКА
     }
+
 
     [Server]
     public void SelectTeamPlayerT(NetworkIdentity client)
@@ -227,11 +239,24 @@ public class SceneController : NetworkBehaviour
         }
 
         //ВЫБОР СКИНА ДЛЯ ИГРОКА
-        int n = Random.Range(0, dataPlayerCombatT.Count);
-        client.GetComponent<PlayerCombatController>().SetDataPlayerCombat = dataPlayerCombatT[n];
+        //int n = Random.Range(0, dataPlayerCombatT.Count);
+        //client.GetComponent<PlayerCombatController>().SetDataPlayerCombat = dataPlayerCombatT[n];2;
+        SelectDataPlayerCombat(client, 1);
         //КОНЕЦ ВЫБОРА СКИНА ДЛЯ ИГРОКА
 
         player.StatusSelectTeam(client.connectionToClient, true);
+        player.transform.position = spawnPositionT[0].position; //Спавн игрока
+        RpcNewPositionPlayer(client, spawnPositionT[0].position);
+
+    }
+    
+
+    [ClientRpc]
+    public void RpcNewPositionPlayer(NetworkIdentity client, Vector3 newPos)
+    {
+        PlayerTeamController player = client.GetComponent<PlayerTeamController>();
+        player.transform.position = newPos; //Спавн игрока
+        player.GetComponent<PlayerCombatController>().OnDead(false);
     }
 
     [TargetRpc]
